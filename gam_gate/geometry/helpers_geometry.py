@@ -65,6 +65,9 @@ def get_volume_bounding_size(simulation, volume_name):
     pMin, pMax = get_volume_bounding_limits(simulation, volume_name)
     return [pMax[0] - pMin[0], pMax[1] - pMin[1], pMax[2] - pMin[2]]
 
+def initialize_image(g4_solid, image):
+   g4_solid.setResolutionX(image.GetSpacing()[0]) 
+
 
 # correspondence element names <> symbol
 elements_name_symbol = {'Hydrogen': 'H', 'Carbon': 'C', 'Nitrogen': 'N', 'Oxygen': 'O',

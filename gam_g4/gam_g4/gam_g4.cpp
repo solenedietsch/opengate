@@ -263,6 +263,8 @@ void init_GamUniqueVolumeID(py::module &);
 
 void init_GamVolumeDepthID(py::module &m);
 
+void init_GamImageBox(py::module &m);
+
 PYBIND11_MODULE(gam_g4, m) {
 
     init_G4ThreeVector(m);
@@ -401,4 +403,5 @@ PYBIND11_MODULE(gam_g4, m) {
     init_GamUniqueVolumeIDManager(m);
     init_GamUniqueVolumeID(m);
     init_GamVolumeDepthID(m);
+    init_GamImageBox(m);
 }

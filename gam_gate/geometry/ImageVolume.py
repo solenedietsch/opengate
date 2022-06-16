@@ -42,7 +42,9 @@ class ImageVolume(gam.VolumeBase):
         hspacing = spacing / 2.0
 
         # build the bounding box volume
-        self.g4_solid = g4.G4Box(name, hsize_mm[0], hsize_mm[1], hsize_mm[2])
+        #self.g4_solid = g4.G4Box(name, hsize_mm[0], hsize_mm[1], hsize_mm[2])
+        self.g4_solid = g4.GamImageBox(name, hsize_mm[0], hsize_mm[1], hsize_mm[2])
+        gam.geometry.initialize_image(self.g4_solid, self.image)
         def_mat = vol_manager.find_or_build_material(self.user_info.material)
         self.g4_logical_volume = g4.G4LogicalVolume(self.g4_solid, def_mat, name)
 

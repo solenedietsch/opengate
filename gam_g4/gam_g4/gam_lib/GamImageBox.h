@@ -28,23 +28,21 @@ namespace py = pybind11;
 class GamImageBox : public virtual G4Box {
 
 public:
-    GamImageBox(const G4String & name, const G4double pX, const G4double pY, const G4double pZ);
+    GamImageBox(py::dict &user_info);
     ~GamImageBox();
 
-    typedef float PixelType; // FIXME
+    typedef float PixelType;
 
-    void setResolutionX(const size_t x);
     void DescribeYourselfTo(G4VGraphicsScene& scene) const;
+    //void InitialiseSlice(std::vector<PixelType> & sliceXY, std::vector<PixelType> & sliceXZ, std::vector<PixelType> & sliceYZ, const double resol_x, const double resol_y, const double resol_z);
+    void InitialiseSlice(const double resol_x, const double resol_y, const double resol_z);
+
 private:
 #ifdef GAMIMAGEBOX_USE_OPENGL
     void DescribeYourselfTo(G4OpenGLSceneHandler& scene) const;
 
-    std::vector<PixelType> getXYSlice(const GateImage & image, const size_t z) const;
-    std::vector<PixelType> getXZSlice(const GateImage & image, const size_t y) const;
-    std::vector<PixelType> getYZSlice(const GateImage & image, const size_t x) const;
-    GLubyte * convertToRGB(std::vector<PixelType> slice, PixelType min, PixelType max) const;
+    GLubyte * convertToRGB(std::vector<PixelType> slice) const;
     GLuint genOpenGLTexture(const GLubyte * rgb, int width, int height) const;
-    void initOpenGLTextures(const GateImage & image, const size_t x, const size_t y, const size_t z);
 
     size_t position_x;
     size_t position_y;

@@ -3,9 +3,11 @@
 
 import gam_gate as gam
 import os
+import pathlib
 from scipy.spatial.transform import Rotation
 
 paths = gam.get_default_test_paths(os.path.abspath(''), 'gate_test009_voxels')
+pathFile = pathlib.Path(__file__).parent.resolve()
 
 # create the simulation
 sim = gam.Simulation()
@@ -17,7 +19,7 @@ ui.g4_verbose_level = 1
 ui.visu = True
 
 # add a material database
-sim.add_material_database(paths.data / 'GateMaterials.db')
+sim.add_material_database(pathFile / '..' / 'data' / 'GateMaterials.db')
 
 # units
 m = gam.g4_units('m')
@@ -40,7 +42,7 @@ fake.rotation = Rotation.from_euler('x', 20, degrees=True).as_matrix()
 
 # image
 patient = sim.add_volume('Image', 'patient')
-patient.image = paths.data / 'patient-4mm.mhd'
+patient.image = pathFile / '..' / 'data' / 'patient-4mm.mhd'
 patient.mother = 'fake'
 patient.material = 'G4_AIR'  # material used by default
 patient.voxel_materials = [[-2000, -900, 'G4_AIR'],
@@ -50,7 +52,7 @@ patient.voxel_materials = [[-2000, -900, 'G4_AIR'],
                            [300, 800, 'G4_B-100_BONE'],
                            [800, 6000, 'G4_BONE_COMPACT_ICRU']]
 # or alternatively, from a file (like in Gate)
-vm = gam.read_voxel_materials(paths.gate_data / 'patient-HU2mat-v1.txt')
+vm = gam.read_voxel_materials(pathFile / '..' / 'data' / 'gate' / 'gate_test009_voxels' / 'data' / 'patient-HU2mat-v1.txt')
 vm[0][0] = -2000
 assert vm == patient.voxel_materials
 patient.voxel_materials = vm

@@ -41,9 +41,27 @@ class ImageVolume(gam.VolumeBase):
         hsize_mm = size_mm / 2.0
         hspacing = spacing / 2.0
 
+        # prepare the slice of the image to display
+        imageArray = itk.GetArrayFromImage(self.image)
+        minPixel = np.min(imageArray)
+        intervalPixel = np.max(imageArray) - minPixel
+        sliceXY = (imageArray[int(size_pix[0]/2), :, :] - minPixel)/intervalPixel
+        sliceXY = list(sliceXY.reshape(1, -1)[0])
+        sliceXZ = (imageArray[:, int(size_pix[1]/2), :] - minPixel)/intervalPixel
+        sliceXZ = list(sliceXZ.reshape(1, -1)[0])
+        sliceYZ = (imageArray[:, :, int(size_pix[2]/2)] - minPixel)/intervalPixel
+        sliceYZ = list(sliceYZ.reshape(1, -1)[0])
+        dictInfo = {}
+        dictInfo['name'] = name
+        dictInfo['pX'] = hsize_mm[0]
+        dictInfo['pY'] = hsize_mm[1]
+        dictInfo['pZ'] = hsize_mm[2]
+
         # build the bounding box volume
         #self.g4_solid = g4.G4Box(name, hsize_mm[0], hsize_mm[1], hsize_mm[2])
-        self.g4_solid = g4.GamImageBox(name, hsize_mm[0], hsize_mm[1], hsize_mm[2])
+        self.g4_solid = g4.GamImageBox(dictInfo)
+        #self.g4_solid.InitialiseSlice(sliceXY, sliceXZ, sliceYZ, spacing[0], spacing[1], spacing[2])
+        self.g4_solid.InitialiseSlice(spacing[0], spacing[1], spacing[2])
         gam.geometry.initialize_image(self.g4_solid, self.image)
         def_mat = vol_manager.find_or_build_material(self.user_info.material)
         self.g4_logical_volume = g4.G4LogicalVolume(self.g4_solid, def_mat, name)

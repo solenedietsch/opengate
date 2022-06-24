@@ -10,24 +10,12 @@
 #include "G4Polyhedron.hh"
 #include "G4VGraphicsScene.hh"
 #include "G4VisManager.hh"
+#include "GamHelpersDict.h"
 
 #include <typeinfo>
 
 //-----------------------------------------------------------------------------
-GamImageBox::GamImageBox(const G4String & name, const G4double pX, const G4double pY, const G4double pZ) : G4Box(name, pX, pY, pZ) {
-
-#ifdef GAMIMAGEBOX_USE_OPENGL
-    G4VisManager * pVisManager = dynamic_cast<G4VisManager *>(G4VVisManager::GetConcreteInstance());
-    if(pVisManager) {
-
-        G4OpenGLSceneHandler * opengl = dynamic_cast<G4OpenGLSceneHandler *>( pVisManager->GetCurrentSceneHandler() );
-        //if(opengl) {
-        //    initOpenGLTextures(image, image.GetResolution().x() * 0.5, image.GetResolution().y() * 0.5, image.GetResolution().z() * 0.5);
-        //}
-
-    }
-#endif
-
+GamImageBox::GamImageBox(py::dict &user_info) : G4Box(DictGetStr(user_info, "name"), DictGetDouble(user_info, "pX"), DictGetDouble(user_info, "pY"), DictGetDouble(user_info, "pZ")) {
 }
 //-----------------------------------------------------------------------------
 
@@ -37,11 +25,6 @@ GamImageBox::~GamImageBox() {}
 //-----------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
-void GamImageBox::setResolutionX(const size_t x) {
-    resolution_x = x;
-}
-//-----------------------------------------------------------------------------
 
 
 //-----------------------------------------------------------------------------
@@ -147,63 +130,14 @@ void GamImageBox::DescribeYourselfTo(G4OpenGLSceneHandler& scene) const{
 //-----------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
-std::vector<GamImageBox::PixelType> GamImageBox::getXYSlice(const GateImage & image, const size_t z) const{
-    std::vector<PixelType> slice;
-    slice.reserve(image.GetResolution().x() * image.GetResolution().y());
-    for(size_t y = 0; y < image.GetResolution().y(); y++) {
-        for(size_t x = 0; x < image.GetResolution().x(); x++) {
-            PixelType value = image.GetValue(x, y, z);
-            slice.push_back(value);
-        }
-    }
-
-    return slice;
-}
-//-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
-std::vector<GamImageBox::PixelType> GamImageBox::getXZSlice(const GateImage & image, const size_t y) const{
-    std::vector<PixelType> slice;
-    slice.reserve(image.GetResolution().x() * image.GetResolution().z());
-    for(size_t z = 0; z < image.GetResolution().z(); z++) {
-        for(size_t x = 0; x < image.GetResolution().x(); x++) {
-            PixelType value = image.GetValue(x, y, z);
-            slice.push_back(value);
-        }
-    }
-
-    return slice;
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-std::vector<GamImageBox::PixelType> GamImageBox::getYZSlice(const GateImage & image, const size_t x) const{
-    std::vector<PixelType> slice;
-    slice.reserve(image.GetResolution().y() * image.GetResolution().z());
-
-    for(size_t z = 0; z < image.GetResolution().z(); z++) {
-        for(size_t y = 0; y < image.GetResolution().y(); y++) {
-            PixelType value = image.GetValue(x, y, z);
-            slice.push_back(value);
-        }
-    }
-
-    return slice;
-}
-//-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-GLubyte * GamImageBox::convertToRGB(std::vector<PixelType> slice, PixelType min, PixelType max) const{
+GLubyte * GamImageBox::convertToRGB(std::vector<PixelType> slice) const{
     GLubyte * rgb = new GLubyte[slice.size() * 3];
 
-    PixelType interval = max - min;
     int i = 0;
     for(std::vector<PixelType>::iterator it = slice.begin(); it != slice.end(); ++it) {
-        PixelType pixel = *it - min;
-        pixel /= interval;
+        PixelType pixel = *it;
         pixel *= std::numeric_limits<GLubyte>::max();
 
         GLubyte gray = static_cast<GLubyte>(pixel);
@@ -220,58 +154,61 @@ GLubyte * GamImageBox::convertToRGB(std::vector<PixelType> slice, PixelType min,
 
 //-----------------------------------------------------------------------------
 GLuint GamImageBox::genOpenGLTexture(const GLubyte * rgb, int width, int height) const{
-    GLuint texture;
+        std::cout << "coucouc00" << std::endl;
+    GLuint texture(0);
+   GLuint balance[5] = {1000, 2, 3, 17, 50};
+   GLuint* p;
 
-    glGenTextures(1, &texture);
-
+   p = balance;
+ 
+    std::cout << "coucouc01" << std::endl;
+        std::cout << texture << std::endl;    std::cout << "coucouc01" << std::endl;
+    glGenTextures(1, p);
+        std::cout << "coucouc01" << std::endl;
+    std::cout << "coucouc02" << std::endl;
     glBindTexture(GL_TEXTURE_2D, texture);
+    std::cout << "coucouc03" << std::endl;
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    std::cout << "coucouc04" << std::endl;
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    std::cout << "coucouc05" << std::endl;
     glTexImage2D(GL_TEXTURE_2D,0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid*) rgb);
-
+    std::cout << "coucouc06" << std::endl;
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    std::cout << "coucouc07" << std::endl;
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+    std::cout << "coucouc08" << std::endl;
     return texture;
 }
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
-void GamImageBox::initOpenGLTextures(const GateImage & image, const size_t x, const size_t y, const size_t z) {
-    PixelType min = image.GetMinValue();
-    PixelType max = image.GetMaxValue();
-
-    resolution_x = image.GetResolution().x();
-    resolution_y = image.GetResolution().y();
-    resolution_z = image.GetResolution().z();
-
-    position_x = (x < resolution_x) ? x : resolution_x * 0.5;
-    position_y = (y < resolution_y) ? y : resolution_y * 0.5;
-    position_z = (z < resolution_z) ? z : resolution_z * 0.5;
-
+//void GamImageBox::InitialiseSlice(std::vector<PixelType> & sliceXY, std::vector<PixelType> & sliceXZ, std::vector<PixelType> & sliceYZ, const double resol_x, const double resol_y, const double resol_z) {
+void GamImageBox::InitialiseSlice(const double resol_x, const double resol_y, const double resol_z) {
+    std::vector<PixelType> tmp = { 12.0, 1.2 };
     {
-        std::vector<PixelType> sliceXY = getXYSlice(image, position_z);
-        GLubyte * rgb = convertToRGB(sliceXY, min, max);
-        texture_xy = genOpenGLTexture(rgb, image.GetResolution().x(), image.GetResolution().y());
+        GLubyte * rgb = convertToRGB(tmp);
+    std::cout << "coucouc1" << std::endl;
+        texture_xy = genOpenGLTexture(rgb, resol_x, resol_y);
+    std::cout << "coucouc2" << std::endl;
         delete [] rgb;
     }
 
     {
-        std::vector<PixelType> sliceXZ = getXZSlice(image, position_y);
-        GLubyte * rgb = convertToRGB(sliceXZ, min, max);
-        texture_xz = genOpenGLTexture(rgb, image.GetResolution().x(), image.GetResolution().z());
+        GLubyte * rgb = convertToRGB(tmp);
+        texture_xz = genOpenGLTexture(rgb, resol_x, resol_z);
         delete [] rgb;
     }
 
     {
-        std::vector<PixelType> sliceYZ = getYZSlice(image, position_x);
-        GLubyte * rgb = convertToRGB(sliceYZ, min, max);
-        texture_yz = genOpenGLTexture(rgb, image.GetResolution().y(), image.GetResolution().z());
+        GLubyte * rgb = convertToRGB(tmp);
+        texture_yz = genOpenGLTexture(rgb, resol_y, resol_z);
         delete [] rgb;
     }
+
 }
 //-----------------------------------------------------------------------------
+
 
 #endif
 

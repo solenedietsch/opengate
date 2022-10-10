@@ -1,4 +1,5 @@
 import os
+import shutil
 import re
 import sys
 import platform
@@ -50,6 +51,21 @@ class CMakeBuild(build_ext):
         for ext in self.extensions:
             self.build_extension(ext)
 
+    def build_visu_tests(self):
+        old_dir = os.getcwd()
+        os.chdir(os.path.join("..", "opengate", "tests", "src", "test_visu", "visu_g4"))
+        if os.path.isfile("exampleB1.cc"):
+          shutil.rmtree("build", ignore_errors=True)
+          os.mkdir("build")
+          os.chdir("build")
+          print("Starting cmake for visu tests...")
+          subprocess.check_call(["cmake", ".."])
+          print("cmake done")
+
+          subprocess.check_call(["make"])
+        os.chdir(old_dir)
+
+
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         # required for auto-detection of auxiliary "native" libs
@@ -62,8 +78,8 @@ class CMakeBuild(build_ext):
             "-DPYTHON_EXECUTABLE=" + sys.executable,
         ]
 
-        # cfg = 'Debug' if self.debug else 'Release'
-        cfg = "Release"
+        cfg = 'Debug' #if self.debug else 'Release'
+        #cfg = "Release"
         build_args = ["--config", cfg]
 
         # Pile all .so in one place and use $ORIGIN as RPATH
@@ -136,6 +152,7 @@ class CMakeBuild(build_ext):
             cwd=self.build_temp,
         )
 
+        self.build_visu_tests()
 
 if platform.system() == "Darwin":
     package_data = {

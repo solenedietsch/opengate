@@ -121,3 +121,7 @@ __pycache__
 
 /compile_commands.json
 /.cache/
+
+/opengate/tests/src/test_visu/visu_g4_pybind/build/
+/opengate/tests/src/test_visu/visu_g4/build/
+

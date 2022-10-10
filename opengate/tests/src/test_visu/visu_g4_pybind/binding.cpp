@@ -36,7 +36,7 @@ PYBIND11_MODULE(exampleB2, m) {
     py::class_<G4VUserPhysicsList>(m, "G4VUserPhysicsList");
     py::class_<G4VModularPhysicsList, G4VUserPhysicsList>(m, "G4VModularPhysicsList");
     py::class_<G4PhysListFactory>(m, "G4PhysListFactory")
-      .def(py::init())
+      .def(py::init(), py::return_value_policy::reference)
       .def("GetReferencePhysList", &G4PhysListFactory::GetReferencePhysList, py::return_value_policy::reference);
 
     py::class_<G4RunManager>(m, "G4RunManager")
@@ -52,7 +52,7 @@ PYBIND11_MODULE(exampleB2, m) {
       .def("Initialize", &G4VisExecutive::Initialize, py::return_value_policy::reference);
 
     py::class_<G4UImanager>(m, "G4UImanager")
-      .def("ApplyCommand", py::overload_cast<const G4String &>(&G4UImanager::ApplyCommand))
+      .def("ApplyCommand", py::overload_cast<const G4String &>(&G4UImanager::ApplyCommand), py::return_value_policy::reference)
       .def_static("GetUIpointer", &G4UImanager::GetUIpointer, py::return_value_policy::reference);
 
     py::class_<G4String>(m, "G4String")

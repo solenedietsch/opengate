@@ -14,11 +14,15 @@ def visu_g4_pybind():
     runManager.SetUserInitialization(physicsList)
 
     visManager = b2.G4VisExecutive()
-    #visManager.Initialize()
+    visManager.Initialize()
 
-    #UImanager = b2.G4UImanager.GetUIpointer();
+    UImanager = b2.G4UImanager.GetUIpointer();
 
     runManager.Initialize()
+    commandName = b2.G4String("/control/execute vis.mac")
+    UImanager.ApplyCommand(commandName);
+    print("Start visu")
+    ui.SessionStart();
 
     del runManager
 

@@ -2,32 +2,41 @@
 
 import exampleB2 as b2
 
-def visu_g4_pybind():
-    ui = b2.G4UIExecutive()
-    detectorConstruction = b2.getDetectorConstruction()
-    runManager = b2.G4RunManager()
-    runManager.SetUserInitialization(detectorConstruction)
-    physListName = b2.G4String("QBBC")
-    factory = b2.G4PhysListFactory()
-    physicsList = factory.GetReferencePhysList(physListName)
-    print(physicsList)
-    runManager.SetUserInitialization(physicsList)
+# UI: this will start qt interface
+ui = b2.G4UIExecutive()
 
-    visManager = b2.G4VisExecutive()
-    visManager.Initialize()
+# world
+detectorConstruction = b2.getDetectorConstruction()
 
-    UImanager = b2.G4UImanager.GetUIpointer();
+# Run Manager
+# no seg fault when G4RunManagerFactory is used instead of direct G4RunManager
+runManager = b2.G4RunManagerFactory.CreateRunManager()
+runManager.SetUserInitialization(detectorConstruction)
 
-    runManager.Initialize()
-    commandName = b2.G4String("/control/execute vis.mac")
-    UImanager.ApplyCommand(commandName);
-    print("Start visu")
-    ui.SessionStart();
+# PL
+physicsList = b2.QBBC()
+print('Physic list', physicsList)
+runManager.SetUserInitialization(physicsList)
 
-    del runManager
+# Vis
+visManager = b2.G4VisExecutive()
+visManager.Initialize()
 
-    print("done")
+# init
+runManager.Initialize()
 
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    visu_g4_pybind()
+# visu
+commandName = b2.G4String("/control/execute vis.mac")
+UImanager = b2.G4UImanager.GetUIpointer()
+UImanager.ApplyCommand(commandName)
+print("Start visu")
+
+# go
+ui.SessionStart()
+
+# del runManager
+# del physicsList
+# del detectorConstruction
+
+print()
+print("DONE ")

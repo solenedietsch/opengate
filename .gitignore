@@ -106,7 +106,8 @@ __pycache__
 /core/opengate_core/geant4_data_old
 /core/opengate_core/save
 /core/opengate_core/.idea
-
+/core/make*sh
+/core/config*json
 
 /build_test/
 
@@ -125,3 +126,4 @@ __pycache__
 /opengate/tests/src/test_visu/visu_g4_pybind/build/
 /opengate/tests/src/test_visu/visu_g4/build/
 
+*.idea*

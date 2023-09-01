@@ -12,6 +12,7 @@ from .DigitizerSpatialBlurringActor import *
 from .DigitizerEfficiencyActor import *
 from .MotionVolumeActor import *
 from .PhaseSpaceActor import *
+from .KillActor import *
 from .SimulationStatisticsActor import *
 from .SourceInfoActor import *
 from .TestActor import *
@@ -22,6 +23,7 @@ actor_type_names = {
     LETActor,
     SourceInfoActor,
     PhaseSpaceActor,
+    KillActor,
     DigitizerHitsCollectionActor,
     DigitizerAdderActor,
     DigitizerEnergyWindowsActor,

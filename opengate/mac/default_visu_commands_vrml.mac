@@ -4,4 +4,5 @@
 /tracking/storeTrajectory             1
 /vis/scene/add/trajectories
 /vis/scene/endOfEventAction           accumulate
+/vis/viewer/set/lineSegmentsPerCircle 100
 #/vis/viewer/flush

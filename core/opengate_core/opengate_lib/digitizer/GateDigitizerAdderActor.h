@@ -79,7 +79,7 @@ protected:
   void AddDigiPerVolume();
 
   // During computation (thread local)
-  struct threadLocalT {
+  struct threadLocalT : public GateVDigitizerWithOutputActor::threadLocalT {
     // std::map<std::string, std::shared_ptr<GateDigiAdderInVolume>>
     // fMapOfDigiInVolume;
     std::map<std::string, GateDigiAdderInVolume *> fMapOfDigiInVolume;

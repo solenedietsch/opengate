@@ -75,7 +75,7 @@ public:
   void SetDirectionZBatch(const py::array_t<double> &fDirectionZ) const;
 
   // For MT, all threads local variables are gathered here
-  struct threadLocalT {
+  struct threadLocalT : public GateVSource::threadLocalT {
 
     ParticleGeneratorType fGenerator;
     unsigned long fNumberOfGeneratedEvents;

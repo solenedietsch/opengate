@@ -58,7 +58,7 @@ protected:
   double Linear(double value);
 
   // During computation (thread local)
-  struct threadLocalT {
+  struct threadLocalT : public GateVDigitizerWithOutputActor::threadLocalT {
     double *fAttDValue{};
   };
   G4Cache<threadLocalT> fThreadLocalData;

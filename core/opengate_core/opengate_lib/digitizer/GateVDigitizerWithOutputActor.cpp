@@ -75,7 +75,7 @@ void GateVDigitizerWithOutputActor::DigitInitialize(
     names.erase(name);
 
   // Get thread local variables
-  auto &l = fThreadLocalVDigitizerData.Get();
+  auto &l = fThreadLocalData.Get();
 
   // Create Filler of all remaining attributes (except the required ones)
   l.fDigiAttributeFiller = new GateDigiAttributesFiller(
@@ -93,7 +93,7 @@ void GateVDigitizerWithOutputActor::BeginOfEventAction(const G4Event *event) {
 // Called every time a Run ends
 void GateVDigitizerWithOutputActor::EndOfRunAction(const G4Run * /*unused*/) {
   fOutputDigiCollection->FillToRootIfNeeded(true);
-  auto &iter = fThreadLocalVDigitizerData.Get().fInputIter;
+  auto &iter = fThreadLocalData.Get().fInputIter;
   iter.Reset();
 }
 

@@ -41,7 +41,7 @@ GateGenericSource::~GateGenericSource() {
   // I dont know exactly why.
   // Maybe because it has been created in a thread which
   // can be different from the thread that delete.
-  auto &l = fThreadLocalDataAA.Get();
+  auto &l = fThreadLocalData.Get();
   if (l.fAAManager != nullptr) {
     // delete l.fAAManager;
   }
@@ -228,7 +228,7 @@ void GateGenericSource::GeneratePrimaries(G4Event *event,
 
   // update the time according to skipped events
   fEffectiveEventTime = current_simulation_time;
-  auto &l = fThreadLocalDataAA.Get();
+  auto &l = fThreadLocalData.Get();
   if (l.fAAManager->IsEnabled()) {
     if (l.fAAManager->GetPolicy() ==
         GateAcceptanceAngleTesterManager::AASkipEvent) {
@@ -391,7 +391,7 @@ void GateGenericSource::InitializeDirection(py::dict puser_info) {
   auto d = py::dict(puser_info["direction"]);
   auto dd = py::dict(d["acceptance_angle"]);
   auto is_iso = ang->GetDistType() == "iso";
-  auto &l = fThreadLocalDataAA.Get();
+  auto &l = fThreadLocalData.Get();
   l.fAAManager = new GateAcceptanceAngleTesterManager;
   l.fAAManager->Initialize(dd, is_iso);
   fSPS->SetAAManager(l.fAAManager);

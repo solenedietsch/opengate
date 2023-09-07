@@ -99,18 +99,17 @@ void GateDigitizerAdderActor::DigitInitialize(
         fOutputDigiCollection->GetDigiAttribute("NumberOfHits");
 
   // set input pointers to the attributes needed for computation
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  lr.fInputIter = fInputDigiCollection->NewIterator();
-  lr.fInputIter.TrackAttribute("TotalEnergyDeposit", &l.edep);
-  lr.fInputIter.TrackAttribute("PostPosition", &l.pos);
-  lr.fInputIter.TrackAttribute("PreStepUniqueVolumeID", &l.volID);
-  lr.fInputIter.TrackAttribute("GlobalTime", &l.time);
+  l.fInputIter = fInputDigiCollection->NewIterator();
+  l.fInputIter.TrackAttribute("TotalEnergyDeposit", &l.edep);
+  l.fInputIter.TrackAttribute("PostPosition", &l.pos);
+  l.fInputIter.TrackAttribute("PreStepUniqueVolumeID", &l.volID);
+  l.fInputIter.TrackAttribute("GlobalTime", &l.time);
 }
 
 void GateDigitizerAdderActor::EndOfEventAction(const G4Event * /*unused*/) {
   // loop on all hits to group per volume ID
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  auto &iter = lr.fInputIter;
+  auto &l = fThreadLocalData.Get();
+  auto &iter = l.fInputIter;
   iter.GoToBegin();
   while (!iter.IsAtEnd()) {
     AddDigiPerVolume();
@@ -118,7 +117,6 @@ void GateDigitizerAdderActor::EndOfEventAction(const G4Event * /*unused*/) {
   }
 
   // create the output hits collection for grouped hits
-  auto &l = fThreadLocalData.Get();
   for (auto &h : l.fMapOfDigiInVolume) {
     auto &hit = h.second;
     // terminate the merge
@@ -133,7 +131,7 @@ void GateDigitizerAdderActor::EndOfEventAction(const G4Event * /*unused*/) {
         fOutputTimeDifferenceAttribute->FillDValue(hit->fDifferenceTime);
       if (fNumberOfHitsFlag)
         fOutputNumberOfHitsAttribute->FillDValue(hit->fNumberOfHits);
-      lr.fDigiAttributeFiller->Fill(hit->fFinalIndex);
+      l.fDigiAttributeFiller->Fill(hit->fFinalIndex);
     }
   }
 
@@ -143,8 +141,7 @@ void GateDigitizerAdderActor::EndOfEventAction(const G4Event * /*unused*/) {
 
 void GateDigitizerAdderActor::AddDigiPerVolume() {
   auto &l = fThreadLocalData.Get();
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  const auto &i = lr.fInputIter.fIndex;
+  const auto &i = l.fInputIter.fIndex;
   if (*l.edep == 0)
     return;
   // uid and fGroupVolumeDepth are only used for repeated volume (such as in

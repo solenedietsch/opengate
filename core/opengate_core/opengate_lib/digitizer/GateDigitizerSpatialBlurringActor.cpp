@@ -45,9 +45,8 @@ void GateDigitizerSpatialBlurringActor::DigitInitialize(
 
   // set input pointers to the attributes needed for computation
   auto &l = fThreadLocalData.Get();
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  lr.fInputIter.TrackAttribute(fBlurAttributeName, &l.fAtt3Value);
-  lr.fInputIter.TrackAttribute("PostStepUniqueVolumeID", &l.fVolumeId);
+  l.fInputIter.TrackAttribute(fBlurAttributeName, &l.fAtt3Value);
+  l.fInputIter.TrackAttribute("PostStepUniqueVolumeID", &l.fVolumeId);
 }
 
 void GateDigitizerSpatialBlurringActor::BeginOfRunAction(const G4Run *run) {
@@ -75,16 +74,15 @@ void GateDigitizerSpatialBlurringActor::BeginOfRunAction(const G4Run *run) {
 void GateDigitizerSpatialBlurringActor::EndOfEventAction(
     const G4Event * /*unused*/) {
   // loop on all digi of this events
-  // auto &l = fThreadLocalData.Get();
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  auto &iter = lr.fInputIter;
+  auto &l = fThreadLocalData.Get();
+  auto &iter = l.fInputIter;
   iter.GoToBegin();
   while (!iter.IsAtEnd()) {
     // blur the current value
     BlurCurrentThreeVectorValue();
     // copy the other attributes
-    auto &i = lr.fInputIter.fIndex;
-    lr.fDigiAttributeFiller->Fill(i);
+    auto &i = l.fInputIter.fIndex;
+    l.fDigiAttributeFiller->Fill(i);
     iter++;
   }
 }

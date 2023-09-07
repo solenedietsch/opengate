@@ -53,7 +53,7 @@ void GateGANSource::InitializeUserInfo(py::dict &user_info) {
   // AAManager is already set in GenericSource BUT MUST be iso direction here ?
   auto d = py::dict(user_info["direction"]);
   auto dd = py::dict(d["acceptance_angle"]);
-  auto &l = fThreadLocalDataAA.Get();
+  auto &l = fThreadLocalData.Get();
   l.fAAManager->Initialize(dd, true);
   fSPS->SetAAManager(l.fAAManager);
 
@@ -158,7 +158,7 @@ void GateGANSource::GeneratePrimaries(G4Event *event,
 void GateGANSource::GenerateOnePrimary(G4Event *event,
                                        double current_simulation_time) {
   // If AA (Angular Acceptance) is enabled, we perform rejection
-  auto &l = fThreadLocalDataAA.Get();
+  auto &l = fThreadLocalData.Get();
   if (l.fAAManager->IsEnabled())
     return GenerateOnePrimaryWithAA(event, current_simulation_time);
 
@@ -301,7 +301,7 @@ void GateGANSource::GenerateOnePrimaryWithAA(G4Event *event,
   fCurrentZeroEvents = 0;
   fCurrentSkippedEvents = 0;
   bool cont = true;
-  auto &l = fThreadLocalDataAA.Get();
+  auto &l = fThreadLocalData.Get();
   l.fAAManager->StartAcceptLoop();
 
   while (cont) {

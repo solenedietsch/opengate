@@ -78,10 +78,10 @@ protected:
   double fWeightSigma;
 
   // angular acceptance management
-  struct threadLocalT {
+  struct threadLocalT : public GateVSource::threadLocalT {
     GateAcceptanceAngleTesterManager *fAAManager;
   };
-  G4Cache<threadLocalT> fThreadLocalDataAA;
+  G4Cache<threadLocalT> fThreadLocalData;
 
   // if confine is used, must be defined after the initialization
   bool fInitConfine;

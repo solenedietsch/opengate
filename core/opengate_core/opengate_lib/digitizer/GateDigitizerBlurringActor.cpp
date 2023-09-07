@@ -47,23 +47,21 @@ void GateDigitizerBlurringActor::DigitInitialize(
 
   // set input pointers to the attributes needed for computation
   auto &l = fThreadLocalData.Get();
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  lr.fInputIter.TrackAttribute(fBlurAttributeName, &l.fAttDValue);
+  l.fInputIter.TrackAttribute(fBlurAttributeName, &l.fAttDValue);
 }
 
 void GateDigitizerBlurringActor::EndOfEventAction(const G4Event * /*unused*/) {
   // loop on all digi of this events
   auto &l = fThreadLocalData.Get();
-  auto &lr = fThreadLocalVDigitizerData.Get();
-  auto &iter = lr.fInputIter;
+  auto &iter = l.fInputIter;
   iter.GoToBegin();
   while (!iter.IsAtEnd()) {
     // blur the current value
     auto v = fBlurValue(*l.fAttDValue);
     fOutputBlurAttribute->FillDValue(v);
     // copy the other attributes
-    auto &i = lr.fInputIter.fIndex;
-    lr.fDigiAttributeFiller->Fill(i);
+    auto &i = l.fInputIter.fIndex;
+    l.fDigiAttributeFiller->Fill(i);
     iter++;
   }
 }

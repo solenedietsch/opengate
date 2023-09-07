@@ -59,11 +59,11 @@ protected:
   size_t fDiscretizeVolumeDepth;
   unsigned long fIgnoredHitsCount; // global instance
 
-  struct threadLocalReadoutT {
+  struct threadLocalT : public GateDigitizerAdderActor::threadLocalT {
     G4Navigator *fNavigator = nullptr;
     unsigned long fIgnoredHitsCount; // thread local instance
   };
-  G4Cache<threadLocalReadoutT> fThreadLocalReadoutData;
+  G4Cache<threadLocalT> fThreadLocalData;
 };
 
 #endif // GateDigitizerDiscretizerActor_h

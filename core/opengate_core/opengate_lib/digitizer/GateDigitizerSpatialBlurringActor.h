@@ -53,7 +53,7 @@ protected:
   G4AffineTransform fVolumeToWorld;
 
   // During computation (thread local)
-  struct threadLocalT {
+  struct threadLocalT : public GateVDigitizerWithOutputActor::threadLocalT {
     GateUniqueVolumeID::Pointer *fVolumeId;
     G4ThreeVector *fAtt3Value{};
     G4Navigator *fNavigator = nullptr;

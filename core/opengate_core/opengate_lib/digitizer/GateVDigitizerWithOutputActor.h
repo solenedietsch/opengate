@@ -63,11 +63,11 @@ protected:
   DigitInitialize(const std::vector<std::string> &attributes_not_in_filler);
 
   // During computation (thread local)
-  struct threadLocalVDigitizerT {
+  struct threadLocalT {
     GateDigiAttributesFiller *fDigiAttributeFiller{};
     GateDigiCollection::Iterator fInputIter;
   };
-  G4Cache<threadLocalVDigitizerT> fThreadLocalVDigitizerData;
+  G4Cache<threadLocalT> fThreadLocalData;
 };
 
 #endif // GateVDigitizerWithOutputActor_h

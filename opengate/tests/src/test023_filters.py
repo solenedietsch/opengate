@@ -14,7 +14,7 @@ if __name__ == "__main__":
     ui.g4_verbose = False
     ui.g4_verbose_level = 1
     ui.visu = False
-    ui.random_seed = 3216549
+    ui.random_seed = 6549
 
     # units
     m = gate.g4_units("m")
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     source.position.type = "sphere"
     source.position.radius = 1 * cm
     source.direction.type = "iso"
-    source.activity = 10000 * Bq
+    source.activity = 30000 * Bq
 
     # filter : keep e- only
     fp = sim.add_filter("ParticleFilter", "fp")
@@ -87,8 +87,7 @@ if __name__ == "__main__":
     print(sim.filter_manager.dump())
 
     # change physics
-    p = sim.get_physics_user_info()
-    p.physics_list_name = "QGSP_BERT_EMZ"
+    sim.physics_manager.physics_list_name = "QGSP_BERT_EMZ"
     sim.physics_manager.global_production_cuts.all = 0.1 * mm
 
     # cuts = p.production_cuts

@@ -366,7 +366,7 @@ void GateGenericSource::InitializeDirection(py::dict puser_info) {
   auto *ang = fSPS->GetAngDist();
   auto ang_type = DictGetStr(user_info, "type");
   std::vector<std::string> ll = {"iso", "momentum", "focused",
-                                 "beam2d"}; // FIXME check on py side ?
+                                 "beam2d", "thetaphi"}; // FIXME check on py side ?
   CheckIsIn(ang_type, ll);
   if (ang_type == "iso") {
     ang->SetAngDistType("iso");
@@ -386,6 +386,14 @@ void GateGenericSource::InitializeDirection(py::dict puser_info) {
     auto sigma = DictGetVecDouble(user_info, "sigma");
     ang->SetBeamSigmaInAngX(sigma[0]);
     ang->SetBeamSigmaInAngY(sigma[1]);
+  }
+  if (ang_type == "thetaphi") {
+    ang->SetAngDistType("iso");
+    auto thetaphi = DictGetVecDouble(user_info, "thetaphi");
+    ang->SetMinTheta(thetaphi[0]);
+    ang->SetMaxTheta(thetaphi[1]);
+    ang->SetMinPhi(thetaphi[2]);
+    ang->SetMaxPhi(thetaphi[3]);
   }
 
   // set the angle acceptance volume if needed

@@ -28,9 +28,9 @@ public:
 
   // Called at initialisation to set the source properties from a single dict
   virtual void InitializeUserInfo(py::dict &user_info);
-  
+
   virtual void UpdateActivity(double time);
-  
+
   double CalcNextTime(double current_simulation_time);
 
   virtual void PrepareNextRun();
@@ -53,10 +53,8 @@ public:
   G4ThreeVector fLocalTranslation;
   G4RotationMatrix fLocalRotation;
 
-
   G4ThreeVector fGlobalTranslation;
   G4RotationMatrix fGlobalRotation;
-
 
 protected:
   unsigned long fMaxN;
@@ -70,7 +68,6 @@ protected:
     G4RotationMatrix fGlobalRotation;
   };
   G4Cache<threadLocalT> fThreadLocalData;
-
 };
 
 #endif // GateVSource_h

@@ -7,7 +7,6 @@ if __name__ == "__main__":
     # create the simulation
     sim = gate.Simulation()
 
-
     # main options
     ui = sim.user_info
     ui.verbose_level = gate.DEBUG
@@ -17,7 +16,6 @@ if __name__ == "__main__":
     ui.number_of_threads = 1
     ui.random_seed = 13241234
     gate.log.debug(ui)
-
 
     cm = gate.g4_units("cm")
 

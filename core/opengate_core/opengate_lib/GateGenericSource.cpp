@@ -86,7 +86,6 @@ void GateGenericSource::InitializeUserInfo(py::dict &user_info) {
   fLambda = log(2) / fHalfLife;
   */
 
-
   // weight
   fWeight = DictGetDouble(user_info, "weight");
   fWeightSigma = DictGetDouble(user_info, "weight_sigma");
@@ -113,7 +112,6 @@ void GateGenericSource::UpdateActivity(double time) {
   if (!fTAC_Times.empty())
     return UpdateActivityWithTAC(time);
   GateVSource::UpdateActivity(time);
-
 }
 
 void GateGenericSource::UpdateActivityWithTAC(double time) {
@@ -153,7 +151,7 @@ double GateGenericSource::PrepareNextTime(double current_simulation_time) {
   fCurrentZeroEvents = 0;
   auto cse = fCurrentSkippedEvents;
   fCurrentSkippedEvents = 0;
-  
+
   // if MaxN is below zero, we check the time
   if (fMaxN <= 0) {
     if (fEffectiveEventTime < fStartTime)
@@ -169,8 +167,8 @@ double GateGenericSource::PrepareNextTime(double current_simulation_time) {
   }
 
   // check according to t MaxN
-  //std::cout<<fNumberOfGeneratedEvents<<std::endl;
-  
+  // std::cout<<fNumberOfGeneratedEvents<<std::endl;
+
   if (fNumberOfGeneratedEvents + cse >= fMaxN) {
     return -1;
   }
